@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-public static class DebugUtility
+namespace CMFramework.Core
 {
-    [Conditional("UNITY_EDITOR")]
-    public static void Log(object message)
+    public static class DebugUtility
     {
-        UnityEngine.Debug.Log(message);
-    }
+        [Conditional("UNITY_EDITOR")]
+        public static void Log(object message)
+        {
+            UnityEngine.Debug.Log(message);
+        }
 
-    [Conditional("UNITY_EDITOR")]
-    public static void Warning(object message)
-    {
-        UnityEngine.Debug.LogWarning(message);
-    }
+        [Conditional("UNITY_EDITOR")]
+        public static void Warning(object message)
+        {
+            UnityEngine.Debug.LogWarning(message);
+        }
 
-    [Conditional("UNITY_EDITOR")]
-    public static void Error(object message)
-    {
-        UnityEngine.Debug.LogError(message);
-    }
+        [Conditional("UNITY_EDITOR")]
+        public static void Error(object message)
+        {
+            UnityEngine.Debug.LogError(message);
+        }
 
-    [Conditional("UNITY_EDITOR")]
-    public static void Ensure(bool flag, object message)
-    {
-        if (flag) Error(message);
+        [Conditional("UNITY_EDITOR")]
+        public static void Ensure(bool flag, object message)
+        {
+            if (flag) Error(message);
+        }
     }
 }
