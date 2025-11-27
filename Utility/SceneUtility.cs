@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CMFramework.Core
 {
-    public class SceneUtility
+    public static class SceneUtility
     {
         private static GameObject DontDestroyOnLoad;
 

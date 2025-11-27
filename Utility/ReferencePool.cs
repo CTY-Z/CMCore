@@ -1,0 +1,69 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace CMFramework.Core
+{
+    public static class ReferencePool
+    {
+        private static Dictionary<Type, ObjectPoolBase> dic_type_pool = new();
+
+        public static int Count { get { return dic_type_pool.Count; } }
+
+        public static ObjectPool<T>.Pooled GetRef<T>(bool isCreatePool = true)// where T : class
+        {
+            ObjectPool<T> pool = GetPool<T>(isCreatePool);
+
+            if (pool == null) return default(ObjectPool<T>.Pooled);
+
+            return pool!.Rent();
+        }
+
+        public static ObjectPool<T>.Pooled GetRefByCreatePool<T>(ObjectCtorData<T> data)// where T : class
+        {
+            ObjectPool<T> pool = GetPool<T>(data);
+            return pool!.Rent();
+        }
+
+        public static ObjectPool<T> GetPool<T>(bool isCreatePool = true)// where T : class
+        {
+            ObjectPoolBase pool = null;
+            if (dic_type_pool.TryGetValue(typeof(T), out pool))
+            {
+                return (ObjectPool<T>)pool;
+            }
+            else
+            {
+                if (!isCreatePool) return null;
+
+                ObjectCtorData<T> data = new ObjectCtorData<T>("", 50, () => { return default(T); });
+                pool = CreatePool<T>(data);
+                dic_type_pool[typeof(T)] = pool;
+                return (ObjectPool<T>)pool;
+            }
+        }
+
+        public static ObjectPool<T> GetPool<T>(ObjectCtorData<T> data)// where T : class
+        {
+            ObjectPoolBase pool = null;
+            if (dic_type_pool.TryGetValue(typeof(T), out pool))
+            {
+                return (ObjectPool<T>)pool;
+            }
+            else
+            {
+                pool = CreatePool<T>(data);
+                dic_type_pool[typeof(T)] = pool;
+                return (ObjectPool<T>)pool;
+            }
+        }
+
+        private static ObjectPool<T> CreatePool<T>(ObjectCtorData<T> data)
+        {
+            return new ObjectPool<T>(data.name, data.initialCapacity, data.factory,
+                data.allowGrow, data.OnRent, data.OnReturn, data.isPrepareItem);
+        }
+    }
+}
+

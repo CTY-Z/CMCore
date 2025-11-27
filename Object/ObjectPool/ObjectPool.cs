@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CMFramework.Core
 {
-    public class ObjectPool<T> where T : class
+    public class ObjectPool<T> : ObjectPoolBase// where T : class
     {
         private T[] arr_item;
         private int[] arr_next;
@@ -14,6 +14,8 @@ namespace CMFramework.Core
         private int count;
         private readonly Func<T> factory;
         private readonly bool allowGrow;
+
+        public override string PoolName { get { return poolName; } }
 
 #nullable enable
         private readonly Action<T>? OnRent;
@@ -46,13 +48,14 @@ namespace CMFramework.Core
         /// <param name="allowGrow">是否允许容量不足时自动扩容(会产生分配)</param>
         /// <param name="OnRend">租用回调</param>
         /// <param name="OnReturn">归还回调</param>
-        /// <param name="isCreateAll">是否在创建Pool时直接预创建所有对象</param>
-        public ObjectPool(int initialCapacity, Func<T> factory, bool allowGrow = false,
-            Action<T>? OnRent = null, Action<T>? OnReturn = null, bool isCreateAll = false)
+        /// <param name="isPrepareItem">是否在创建Pool时直接预创建所有对象</param>
+        public ObjectPool(string name , int initialCapacity, Func<T> factory, bool allowGrow = false,
+            Action<T>? OnRent = null, Action<T>? OnReturn = null, bool isPrepareItem = false)
         {
             if (initialCapacity < 0) 
                 throw new ArgumentOutOfRangeException(nameof(initialCapacity));
 
+            this.poolName = name;
             this.arr_item = new T[initialCapacity];
             this.arr_next = new int[initialCapacity];
             this.freeHead = -1;
@@ -62,7 +65,7 @@ namespace CMFramework.Core
             this.OnRent = OnRent;
             this.OnReturn = OnReturn;
 
-            if (isCreateAll)
+            if (isPrepareItem)
             {
                 for (int i = 0; i < initialCapacity; i++)
                 {
