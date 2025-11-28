@@ -11,7 +11,7 @@ namespace CMFramework.Core
 
         public static int Count { get { return dic_type_pool.Count; } }
 
-        public static ObjectPool<T>.Pooled GetRef<T>(bool isCreatePool = true)// where T : class
+        public static ObjectPool<T>.Pooled GetRef<T>(bool isCreatePool = true) where T : new()
         {
             ObjectPool<T> pool = GetPool<T>(isCreatePool);
 
@@ -26,7 +26,7 @@ namespace CMFramework.Core
             return pool!.Rent();
         }
 
-        public static ObjectPool<T> GetPool<T>(bool isCreatePool = true)// where T : class
+        public static ObjectPool<T> GetPool<T>(bool isCreatePool = true) where T : new()
         {
             ObjectPoolBase pool = null;
             if (dic_type_pool.TryGetValue(typeof(T), out pool))
@@ -37,7 +37,8 @@ namespace CMFramework.Core
             {
                 if (!isCreatePool) return null;
 
-                ObjectCtorData<T> data = new ObjectCtorData<T>("", 50, () => { return default(T); });
+                ObjectCtorData<T> data = new ObjectCtorData<T>("", 50, () => { return new T(); }, false, null
+                    , null, true);
                 pool = CreatePool<T>(data);
                 dic_type_pool[typeof(T)] = pool;
                 return (ObjectPool<T>)pool;

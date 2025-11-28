@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace CMFramework.Core
 {
-    public class ObjectPoolManager
+    public class ObjectPoolManager : ManagerBase
     {
         private Dictionary<Type, ObjectPoolBase> dic_type_pool;
 
-        public void Init()
+        public override void Init()
         {
             dic_type_pool = new();
         }
@@ -48,8 +48,12 @@ namespace CMFramework.Core
 
         private ObjectPool<T> CreatePool<T>(ObjectCtorData<T> data)
         {
-            return new ObjectPool<T>(data.name, data.initialCapacity, data.factory,
+            ObjectPool<T> pool = new ObjectPool<T>(data.name, data.initialCapacity, data.factory,
                 data.allowGrow, data.OnRent, data.OnReturn, data.isPrepareItem);
+
+            dic_type_pool[typeof(T)] = pool;
+
+            return pool;
         }
     }
 }
