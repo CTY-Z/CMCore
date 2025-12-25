@@ -37,7 +37,7 @@ namespace CMFramework.Core
             {
                 if (!isCreatePool) return null;
 
-                ObjectPoolCtorData<T> data = new ObjectPoolCtorData<T>("", 50, () => { return new T(); }, false, null
+                ObjectPoolCtorData<T> data = new ObjectPoolCtorData<T>("", 32, () => { return new T(); }, false, null
                     , null, true);
                 pool = CreatePool<T>(data);
                 dic_type_pool[typeof(T)] = pool;
