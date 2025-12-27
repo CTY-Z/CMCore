@@ -7,7 +7,9 @@ using UnityEngine;
 
 namespace CMFramework.ECS
 {
-    public static class IdxGetter
+    public struct ComponentID { }
+    public struct SingletonID { }
+    public static class IdxGetter<C>
     {
         private static int curIdx = 0;
         private static readonly ConcurrentDictionary<Type, int> dic_type_ID = new();
