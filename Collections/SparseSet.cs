@@ -1,14 +1,17 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 
 namespace CMFramework.Core.Collections
 {
-    public class SparseSet
+    public class SparseSet : IEnumerable<int>
     {
         private int m_pageSize;
 
         private List<int> list_density;
         private List<int[]> list_sparse;
+
+        public List<int> List_Density { get; }
 
         public SparseSet(int pageSize)
         {
@@ -80,6 +83,17 @@ namespace CMFramework.Core.Collections
                         list_sparse[i][j] = -1;
                 }
             }
+        }
+
+        public IEnumerator<int> GetEnumerator()
+        {
+            for (int i = 0; i < list_density.Count; i++)
+                yield return list_density[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
