@@ -63,6 +63,8 @@ namespace CM.Core
             ObjectPoolBase pool = null;
             if (dic_type_pool.TryGetValue(typeof(T), out pool))
                 ((ObjectPool<T>)pool).InternalReturn(idx);
+            else
+                DebugUtil.Error($"归还{typeof(T).Name}时ReferencePool里并没有找到对应类型");
         }
 
         private static ObjectPool<T> CreatePool<T>(ObjectPoolCtorData<T> data) where T : IRefPoolItem
